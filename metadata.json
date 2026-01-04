@@ -1,0 +1,5 @@
+{
+  "name": "TinyPixel Studio",
+  "description": "A high-performance, mobile-friendly pixel art editor with local persistence and multiple export options.",
+  "requestFramePermissions": []
+}
