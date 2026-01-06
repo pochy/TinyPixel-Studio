@@ -1,5 +1,5 @@
 
-export type Tool = 'pencil' | 'eraser' | 'bucket' | 'picker';
+export type Tool = 'pencil' | 'eraser' | 'bucket' | 'picker' | 'swap';
 
 export interface Point {
   x: number;

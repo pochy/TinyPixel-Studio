@@ -324,6 +324,19 @@ export const floodFill = (
   return newGrid;
 };
 
+/**
+ * Grids global color replacement
+ */
+export const globalReplaceColor = (
+  grid: string[][],
+  targetColor: string,
+  replacementColor: string
+): string[][] => {
+  return grid.map(row => 
+    row.map(cell => cell === targetColor ? replacementColor : cell)
+  );
+};
+
 export const generateSVG = (grid: string[][], size: number): string => {
   let rects = '';
   for (let y = 0; y < grid.length; y++) {

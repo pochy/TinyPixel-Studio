@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Tool, DEFAULT_SIZE, MAX_HISTORY, AnchorType, ResizeMode, PixelateMode, PixelateSettings } from './types';
-import { createEmptyGrid, floodFill, generateSVG, gridToCanvas, resizeGridFix, resizeGridRescale, pixelateImage } from './utils/pixelUtils';
+import { createEmptyGrid, floodFill, generateSVG, gridToCanvas, resizeGridFix, resizeGridRescale, pixelateImage, globalReplaceColor } from './utils/pixelUtils';
 import Toolbar from './components/Toolbar';
 import PixelCanvas from './components/PixelCanvas';
 
@@ -144,6 +144,13 @@ const App: React.FC = () => {
       const filledGrid = floodFill(grid, x, y, targetColor, color);
       setGrid(filledGrid);
       commitToHistory(filledGrid);
+    } else if (tool === 'swap') {
+      // Global Replace: Click a color on canvas, replace all with active palette color
+      const activeColor = (tool as string) === 'eraser' ? 'transparent' : color;
+      if (targetColor === activeColor) return;
+      const replacedGrid = globalReplaceColor(grid, targetColor, activeColor);
+      setGrid(replacedGrid);
+      commitToHistory(replacedGrid);
     } else if (tool === 'picker') {
       if (grid[y][x] !== 'transparent') {
         setColor(grid[y][x]);
@@ -329,6 +336,9 @@ const App: React.FC = () => {
     setIsClearing(false);
     setIsMobileMenuOpen(false);
   };
+
+  // Helper to determine active paint color based on tool
+  const paintColor = tool === 'eraser' ? 'transparent' : color;
 
   return (
     <div className="flex flex-col md:flex-row h-screen w-full overflow-hidden select-none bg-slate-900" onMouseUp={handleStrokeEnd} onTouchEnd={handleStrokeEnd}>

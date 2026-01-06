@@ -20,6 +20,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
     { id: 'pencil', icon: '✎', label: 'Pencil' },
     { id: 'eraser', icon: '⌫', label: 'Eraser' },
     { id: 'bucket', icon: '🪣', label: 'Fill' },
+    { id: 'swap', icon: '⇋', label: 'Global' },
     { id: 'picker', icon: '⯈', label: 'Picker' },
   ];
 
