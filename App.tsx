@@ -85,8 +85,17 @@ const App: React.FC = () => {
     }
   }, [grid, isResizeModalOpen]);
 
+  // Safe LocalStorage Saving
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ grid }));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ grid }));
+    } catch (e) {
+      if (e instanceof DOMException && e.name === 'QuotaExceededError') {
+        console.warn("Storage quota exceeded. Progress will not be saved automatically for this large canvas.");
+      } else {
+        console.error("Failed to save to localStorage", e);
+      }
+    }
   }, [grid]);
 
   // Debounced Pixelate Preview
@@ -145,8 +154,7 @@ const App: React.FC = () => {
       setGrid(filledGrid);
       commitToHistory(filledGrid);
     } else if (tool === 'swap') {
-      // Global Replace: Click a color on canvas, replace all with active palette color
-      const activeColor = (tool as string) === 'eraser' ? 'transparent' : color;
+      const activeColor = color; // tool switching might change tool but we want global swap to use color
       if (targetColor === activeColor) return;
       const replacedGrid = globalReplaceColor(grid, targetColor, activeColor);
       setGrid(replacedGrid);
@@ -212,11 +220,12 @@ const App: React.FC = () => {
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
       
-      const MAX_DIM = 1024;
+      // Limit import dimensions to prevent memory/storage crashes
+      const MAX_IMPORT_DIM = 512; 
       let w = img.width;
       let h = img.height;
-      if (w > MAX_DIM || h > MAX_DIM) {
-        const ratio = Math.min(MAX_DIM / w, MAX_DIM / h);
+      if (w > MAX_IMPORT_DIM || h > MAX_IMPORT_DIM) {
+        const ratio = Math.min(MAX_IMPORT_DIM / w, MAX_IMPORT_DIM / h);
         w = Math.floor(w * ratio);
         h = Math.floor(h * ratio);
       }
@@ -337,9 +346,6 @@ const App: React.FC = () => {
     setIsMobileMenuOpen(false);
   };
 
-  // Helper to determine active paint color based on tool
-  const paintColor = tool === 'eraser' ? 'transparent' : color;
-
   return (
     <div className="flex flex-col md:flex-row h-screen w-full overflow-hidden select-none bg-slate-900" onMouseUp={handleStrokeEnd} onTouchEnd={handleStrokeEnd}>
       <Toolbar 
@@ -358,7 +364,6 @@ const App: React.FC = () => {
           <div className="flex items-center gap-1 md:gap-2">
              <h1 className="font-bold text-slate-100 hidden sm:block mr-2">TinyPixel</h1>
              
-             {/* Primary Actions - Organized for Mobile */}
              <button 
                 onClick={() => setIsSizeModalOpen(true)}
                 title="New Canvas"
@@ -384,7 +389,6 @@ const App: React.FC = () => {
           </div>
           
           <div className="flex gap-1 md:gap-2">
-            {/* Desktop Full Menu */}
             <div className="hidden lg:flex gap-2">
               <label className="bg-slate-700 hover:bg-slate-600 active:scale-95 px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all text-slate-200">
                 Import
@@ -409,7 +413,6 @@ const App: React.FC = () => {
               </button>
             </div>
 
-            {/* Mobile / Tablet Menu Button */}
             <div className="lg:hidden relative">
                <button 
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -442,7 +445,7 @@ const App: React.FC = () => {
           </div>
         </header>
 
-        {/* Clear Modal */}
+        {/* Modals remain the same but use updated handlers */}
         {isClearing && (
           <div className="fixed inset-0 bg-slate-950/90 flex items-center justify-center z-[100] backdrop-blur-md p-4">
             <div className="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-2xl max-w-sm w-full animate-in zoom-in-95 duration-200">
@@ -456,7 +459,6 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* New Canvas Modal */}
         {isSizeModalOpen && (
           <div className="fixed inset-0 bg-slate-950/90 flex items-center justify-center z-[100] backdrop-blur-md p-4">
             <div className="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-2xl max-w-md w-full animate-in zoom-in-95 duration-200">
@@ -515,7 +517,6 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* Resize Canvas Modal */}
         {isResizeModalOpen && (
           <div className="fixed inset-0 bg-slate-950/90 flex items-center justify-center z-[100] backdrop-blur-md p-4">
             <div className="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-2xl max-w-md w-full animate-in zoom-in-95 duration-200">
@@ -607,7 +608,6 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* Pixelate Modal */}
         {isPixelateModalOpen && (
           <div className="fixed inset-0 bg-slate-950/95 flex items-center justify-center z-[110] backdrop-blur-lg p-4 overflow-y-auto">
             <div className="bg-slate-800 p-6 md:p-8 rounded-2xl border border-slate-700 shadow-2xl max-w-4xl w-full animate-in zoom-in-95 duration-200">
@@ -616,7 +616,6 @@ const App: React.FC = () => {
               </h2>
               
               <div className="grid md:grid-cols-2 gap-8">
-                {/* Controls */}
                 <div className="space-y-6">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -711,7 +710,6 @@ const App: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Preview */}
                 <div className="flex flex-col h-full min-h-[300px] border-2 border-slate-700 rounded-2xl overflow-hidden bg-slate-950 relative">
                    <div className="absolute top-2 left-2 z-10 bg-slate-900/80 px-2 py-1 rounded text-[10px] text-slate-400 uppercase font-bold">Preview Result</div>
                    <div className="flex-1 flex items-center justify-center p-4 relative">
