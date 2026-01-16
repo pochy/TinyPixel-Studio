@@ -1,55 +1,55 @@
 
 # ✨ TinyPixel Studio
 
-TinyPixel Studio は、ブラウザで動作する高機能かつ軽量なドット絵（ピクセルアート）エディタです。
-PCとモバイルの両方に最適化されており、直感的な操作感と高度な画像変換機能を備えています。
+TinyPixel Studio is a high-performance, lightweight pixel art editor that runs in your browser.
+Optimized for both PC and mobile, it features intuitive controls and advanced image conversion capabilities.
 
-## 🚀 主な機能
+## 🚀 Key Features
 
-- **高性能な描画システム**: 低スペックなデバイスでも滑らかに動作する Canvas ベースのエンジン。
-- **マルチデバイス対応**: PCでのマウス操作はもちろん、モバイルのタッチ操作やピンチズームにも完全対応。
-- **Pixelate コンバーター**: 
-  - 任意の画像を高品質なドット絵に変換。
-  - **Median-Cut アルゴリズム**: 画像から最適なカラーパレットを自動生成。
-  - **Floyd-Steinberg ディザリング**: 限られた色数で豊かな階調を表現。
-  - **3種類の変換モード**: COVER（切り抜き）、CONTAIN（全体収め）、STRETCH（引き延ばし）。
-- **インテリジェントなキャンバス操作**:
-  - 数値入力欄で算術演算（例: `32 * 2`）をサポート。
-  - 9方向のアンカー指定による柔軟なリサイズ。
-- **データ永続化**: ブラウザの LocalStorage を利用し、作業内容は自動保存。クラッシュやリロード後も即座に復帰可能。
-- **多様なエクスポート**: PNG、SVG 形式に対応。
-- **オフライン動作 (PWA)**: 一度読み込めばインターネット接続がなくても利用可能。
+- **High-Performance Drawing System**: A Canvas-based engine that runs smoothly even on low-spec devices.
+- **Multi-Device Support**: Full support for mouse input on PC, as well as touch gestures and pinch-to-zoom on mobile.
+- **Pixelate Converter**: 
+  - Convert arbitrary images into high-quality pixel art.
+  - **Median-Cut Algorithm**: Automatically generates the optimal color palette from the image.
+  - **Floyd-Steinberg Dithering**: Expresses rich gradients with a limited number of colors.
+  - **3 Conversion Modes**: COVER (Crop), CONTAIN (Fit), STRETCH (Resize).
+- **Intelligent Canvas Operations**:
+  - Supports arithmetic operations in input fields (e.g., `32 * 2`).
+  - Flexible resizing with 9-direction anchor specification.
+- **Data Persistence**: Uses browser LocalStorage to automatically save your work. Instantly recover after a crash or reload.
+- **Versatile Export**: Supports PNG and SVG formats.
+- **Offline Capable (PWA)**: Works without an internet connection once loaded.
 
-## 🛠 テクニック & アーキテクチャ
+## 🛠 Techniques & Architecture
 
-### 画像処理アルゴリズム
-ドット絵変換の核心として以下のロジックを採用しています：
-1. **幾何変換 (Geometry Phase)**: 指定されたアンカーとモードに基づき、最近傍補間（Nearest Neighbor）で低解像度へリサイズ。
-2. **減色処理 (Quantization)**: Median-Cut法を用いて、入力画像の特徴を捉えたカラーパレットを生成。
-3. **誤差拡散 (Dithering)**: Floyd-Steinberg法により、量子化誤差を隣接ピクセルに拡散させ、滑らかなグラデーションを再現。
+### Image Processing Algorithms
+The following logic is employed as the core of the pixel art conversion:
+1. **Geometry Phase**: Resizes to low resolution using Nearest Neighbor interpolation based on the specified anchor and mode.
+2. **Quantization**: Generates a color palette capturing the input image's features using the Median-Cut method.
+3. **Dithering**: Reproduces smooth gradients by diffusing quantization errors to adjacent pixels using the Floyd-Steinberg method.
 
-### パフォーマンス最適化
-- **Canvas API**: DOM要素を最小限に抑え、描画処理をCanvasに集約。
-- **デバウンス処理**: Pixelateプレビュー等の重い処理は、ユーザーの入力を待ってから実行し、UIのフリーズを防止。
-- **イメージレンダリング**: CSSの `image-rendering: pixelated` を活用し、拡大表示時もボケのない鮮明なドットを表示。
+### Performance Optimization
+- **Canvas API**: Minimizes DOM elements by consolidating drawing operations into the Canvas.
+- **Debouncing**: Heavy processes like Pixelate previews wait for user input to stop before executing, preventing UI freezes.
+- **Image Rendering**: Utilizes CSS `image-rendering: pixelated` to display crisp pixels without blurring even when zoomed in.
 
-## 📖 使い方
+## 📖 Usage
 
-### 基本操作
-- **ペン/消しゴム**: ドットを描画・削除します。
-- **塗りつぶし (バケツ)**: 隣接する同色エリアを一括で変更します。
-- **スポイト**: キャンバス上の色を取得します。
-- **ズーム**: マウスホイールまたはピンチ操作で拡大縮小。
+### Basic Operations
+- **Pen/Eraser**: Draw and erase pixels.
+- **Fill (Bucket)**: Change valid adjacent colored areas at once.
+- **Eyedropper**: Pick colors from the canvas.
+- **Zoom**: Zoom in/out using the mouse wheel or pinch gestures.
 
-### Pixelate コンバーター
-1. ヘッダーの「✨ Pixelate」ボタンをクリック。
-2. 画像を選択。
-3. 出力サイズ（Width/Height）を設定。
-4. パレット色数（8〜256、またはフルカラー）を選択。
-5. 必要に応じてディザリングを有効化。
-6. 「Apply to Editor」でエディタに反映。
+### Pixelate Converter
+1. Click the "✨ Pixelate" button in the header.
+2. Select an image.
+3. Set the output size (Width/Height).
+4. Select palette color count (8-256, or Original).
+5. Enable dithering if necessary.
+6. Click "Apply to Editor" to reflect changes on the canvas.
 
-## 📝 技術スタック
+## 📝 Tech Stack
 - **Frontend**: React 19, TypeScript
 - **Styling**: Tailwind CSS
 - **Icons/UI**: Lucide-like custom SVG icons
