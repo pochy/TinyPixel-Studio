@@ -11,37 +11,10 @@
     // Viteのビルド出力ディレクトリ
     "directory": "./dist",
 
-    // Worker内でアセットにアクセスするためのバインディング名
-    "binding": "ASSETS",
-
     // HTMLファイルの処理方法 (自動的に末尾スラッシュを処理)
     "html_handling": "auto-trailing-slash",
 
-    // 404エラーページの処理
+    // 404エラーページの処理 (SPAのルーティングに対応)
     "not_found_handling": "single-page-application"
-  },
-
-  // workers.dev サブドメインを有効化
-  "workers_dev": true,
-
-  // 環境変数 (必要に応じて設定)
-  "vars": {
-    // "GEMINI_API_KEY": "your-api-key-here"
-  },
-
-  // 本番環境の設定例
-  "env": {
-    "production": {
-      "name": "tinypixel-studio-production",
-      "vars": {
-        // 本番環境用の環境変数
-      }
-      // "routes": [
-      //   {
-      //     "pattern": "tinypixel.example.com/*",
-      //     "custom_domain": true
-      //   }
-      // ]
-    }
   }
 }
